@@ -1,0 +1,302 @@
+basePath: /api
+definitions:
+  domain.ErrorMessage:
+    properties:
+      error:
+        type: boolean
+      message: {}
+      status_code:
+        type: integer
+    type: object
+  domain.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  domain.TransactionRequest:
+    properties:
+      id:
+        type: integer
+      invoice_number:
+        type: string
+      tenant_id:
+        type: integer
+      total_amount:
+        type: integer
+      transaction_date:
+        type: string
+      user_id:
+        type: integer
+      voucherGenerated:
+        type: boolean
+    type: object
+  domain.UserRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: jayapermanarama@gmail.com
+    name: Rama Jayapermana
+  description: RESTFul API to distribute and redeem the voucher
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Royalty API
+  version: "1.0"
+paths:
+  /transaction:
+    post:
+      consumes:
+      - application/json
+      description: Create Transaction for each User
+      parameters:
+      - description: Transaction information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Create Transaction for each User
+      tags:
+      - Transaction
+  /transaction/:userId:
+    get:
+      consumes:
+      - application/json
+      description: List of Transaction for each User
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: List of Transaction for each User
+      tags:
+      - Transaction
+  /user:
+    get:
+      description: Retrieve list of users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Get list of users
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Register User to the App
+      parameters:
+      - description: User information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Register User
+      tags:
+      - User
+  /user/:id:
+    delete:
+      description: Delete user from database
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Delete user
+      tags:
+      - User
+    get:
+      description: Retrieve detail of users
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Get user detail
+      tags:
+      - User
+    patch:
+      consumes:
+      - application/json
+      description: Update Exist User in the Application
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Update User
+      tags:
+      - User
+  /voucher/:userId:
+    get:
+      description: Retrieve list of vouchers based on User ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Get list of vouchers
+      tags:
+      - Voucher
+  /voucher/generate/:invoice:
+    get:
+      description: Generate Voucher for User based on Invoice
+      parameters:
+      - description: Invoice Number
+        in: path
+        name: invoice
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Generate Voucher for User
+      tags:
+      - Voucher
+  /voucher/redeem/:code:
+    get:
+      description: Redeem Voucher for User
+      parameters:
+      - description: Voucher Code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorMessage'
+      summary: Redeem Voucher for User
+      tags:
+      - Voucher
+swagger: "2.0"
